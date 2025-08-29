@@ -13,10 +13,17 @@ kafka-basis/
 └── src/main/java/com/heibaiying/
     ├── consumers/                              # 消费者示例
     │   ├── ConsumerASyn.java                   # 异步提交消费者
-    │   └── ConsumerSyn.java                    # 同步提交消费者
+    │   ├── ConsumerSyn.java                    # 同步提交消费者
+    │   ├── ConsumerASynAndSyn.java             # 混合提交策略消费者
+    │   ├── ConsumerASynWithOffsets.java        # 手动偏移量管理消费者
+    │   ├── ConsumerExit.java                   # 优雅退出消费者
+    │   ├── ConsumerGroup.java                  # 消费者组示例
+    │   ├── RebalanceListener.java              # 重平衡监听器消费者
+    │   └── StandaloneConsumer.java             # 独立消费者
     └── producers/                              # 生产者示例
         ├── SimpleProducer.java                 # 简单生产者
         ├── ProducerASyn.java                   # 异步生产者
+        ├── ProducerSyn.java                    # 同步生产者
         ├── ProducerWithPartitioner.java        # 使用自定义分区器的生产者
         └── partitioners/
             └── CustomPartitioner.java          # 自定义分区器实现
@@ -98,7 +105,16 @@ mvn exec:java -Dexec.mainClass="com.heibaiying.consumers.ConsumerASyn"
   - 同步发送消息
   - 资源释放
 
-#### 2. ProducerASyn - 异步生产者
+#### 2. ProducerSyn - 同步生产者
+- **文件**: `src/main/java/com/heibaiying/producers/ProducerSyn.java`
+- **功能**: 演示同步发送消息并获取发送结果
+- **知识点**:
+  - 同步发送vs异步发送的区别
+  - 同步发送的可靠性保证
+  - RecordMetadata元数据获取
+  - 适用于对可靠性要求高的场景
+
+#### 3. ProducerASyn - 异步生产者
 - **文件**: `src/main/java/com/heibaiying/producers/ProducerASyn.java`
 - **功能**: 演示异步发送消息和回调处理
 - **知识点**:
@@ -107,7 +123,7 @@ mvn exec:java -Dexec.mainClass="com.heibaiying.consumers.ConsumerASyn"
   - 异常处理机制
   - RecordMetadata的作用
 
-#### 3. ProducerWithPartitioner - 自定义分区器生产者
+#### 4. ProducerWithPartitioner - 自定义分区器生产者
 - **文件**: `src/main/java/com/heibaiying/producers/ProducerWithPartitioner.java`
 - **功能**: 演示如何使用自定义分区器
 - **知识点**:
@@ -115,7 +131,7 @@ mvn exec:java -Dexec.mainClass="com.heibaiying.consumers.ConsumerASyn"
   - 分区策略的影响
   - 参数传递机制
 
-#### 4. CustomPartitioner - 自定义分区器实现
+#### 5. CustomPartitioner - 自定义分区器实现
 - **文件**: `src/main/java/com/heibaiying/producers/partitioners/CustomPartitioner.java`
 - **功能**: 自定义分区逻辑的实现
 - **知识点**:
@@ -142,6 +158,60 @@ mvn exec:java -Dexec.mainClass="com.heibaiying.consumers.ConsumerASyn"
   - 回调处理机制
   - 提交失败的处理
   - 消费者组的概念
+
+#### 3. ConsumerASynAndSyn - 混合提交策略消费者
+- **文件**: `src/main/java/com/heibaiying/consumers/ConsumerASynAndSyn.java`
+- **功能**: 演示结合异步和同步提交的消费者
+- **知识点**:
+  - 混合提交策略的优势
+  - 异步提交提高性能，同步提交保证可靠性
+  - 消费者关闭前的最终同步提交
+  - 适用于高性能且需要可靠性保证的场景
+
+#### 4. ConsumerASynWithOffsets - 手动偏移量管理消费者
+- **文件**: `src/main/java/com/heibaiying/consumers/ConsumerASynWithOffsets.java`
+- **功能**: 演示手动管理特定偏移量的消费者
+- **知识点**:
+  - 手动偏移量管理的精确控制
+  - TopicPartition和OffsetAndMetadata的使用
+  - 异步提交特定偏移量
+  - 适用于需要精确控制消费进度的场景
+
+#### 5. ConsumerExit - 优雅退出消费者
+- **文件**: `src/main/java/com/heibaiying/consumers/ConsumerExit.java`
+- **功能**: 演示消费者的优雅退出机制
+- **知识点**:
+  - wakeup()方法的使用
+  - WakeupException异常处理
+  - 多线程协作模式
+  - 确保资源正确释放
+
+#### 6. ConsumerGroup - 消费者组示例
+- **文件**: `src/main/java/com/heibaiying/consumers/ConsumerGroup.java`
+- **功能**: 演示消费者组的基本使用
+- **知识点**:
+  - 消费者组的核心概念
+  - 分区自动分配机制
+  - 自动提交偏移量
+  - 负载均衡和故障转移
+
+#### 7. RebalanceListener - 重平衡监听器消费者
+- **文件**: `src/main/java/com/heibaiying/consumers/RebalanceListener.java`
+- **功能**: 演示重平衡事件的监听和处理
+- **知识点**:
+  - ConsumerRebalanceListener接口
+  - 重平衡前后的回调处理
+  - 偏移量的手动管理
+  - 确保消息不丢失和不重复
+
+#### 8. StandaloneConsumer - 独立消费者
+- **文件**: `src/main/java/com/heibaiying/consumers/StandaloneConsumer.java`
+- **功能**: 演示不加入消费者组的独立消费者
+- **知识点**:
+  - 独立消费者vs消费者组的区别
+  - 手动分区分配(assign vs subscribe)
+  - 精确控制消费的分区
+  - 适用于简单的单实例消费场景
 
 ## 核心概念解释
 
