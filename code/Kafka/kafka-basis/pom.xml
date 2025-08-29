@@ -1,18 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Kafka基础示例项目的Maven配置文件
+    
+    项目说明：
+    本项目演示了Kafka的基本使用方法，包括生产者和消费者的各种使用场景
+    适合Kafka初学者学习和理解Kafka的核心概念
+    
+    主要功能：
+    1. 简单生产者示例 - 基本的消息发送
+    2. 异步生产者示例 - 带回调的异步消息发送
+    3. 自定义分区器示例 - 自定义消息分区逻辑
+    4. 同步消费者示例 - 同步提交偏移量的消费者
+    5. 异步消费者示例 - 异步提交偏移量的消费者
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <!-- 项目基本信息 -->
     <groupId>com.heibaiying</groupId>
     <artifactId>kafka-basis</artifactId>
     <version>1.0</version>
+    <packaging>jar</packaging>
+
+    <!-- 项目属性配置 -->
+    <properties>
+        <!-- 项目编码格式，统一使用UTF-8 -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        
+        <!-- Java编译版本，使用JDK 8 -->
+        <!-- Kafka 2.2.0版本要求JDK 8或更高版本 -->
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+    </properties>
+
+    <!-- 构建配置 -->
     <build>
         <plugins>
+            <!-- Maven编译插件 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
+                    <!-- 使用JDK 8进行编译 -->
                     <source>8</source>
                     <target>8</target>
                 </configuration>
@@ -21,23 +52,76 @@
     </build>
 
 
+    <!-- 项目依赖配置 -->
     <dependencies>
+        <!-- Kafka客户端依赖 -->
+        <!-- 这是Kafka的核心客户端库，包含生产者和消费者API -->
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-clients</artifactId>
             <version>2.2.0</version>
+            <!-- 
+                版本说明：
+                - 2.2.0是一个稳定的LTS版本
+                - 包含KafkaProducer、KafkaConsumer等核心类
+                - 支持事务、幂等性等高级特性
+                - 与Kafka服务器版本保持一致可获得最佳兼容性
+            -->
         </dependency>
+        
+        <!-- Kafka服务器依赖 -->
+        <!-- 包含Kafka服务器端的一些工具类和实用程序 -->
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka_2.12</artifactId>
             <version>2.2.0</version>
+            <!-- 
+                版本说明：
+                - kafka_2.12表示使用Scala 2.12编译的Kafka
+                - 主要用于访问一些服务器端的工具类
+                - 在客户端开发中通常不是必需的，但某些高级功能可能需要
+            -->
         </dependency>
+        
+        <!-- SLF4J日志实现 -->
+        <!-- 用于禁用Kafka的日志输出，避免控制台输出过多日志信息 -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-nop</artifactId>
             <version>1.7.25</version>
+            <!-- 
+                日志说明：
+                - slf4j-nop是一个"无操作"的SLF4J实现
+                - 它会丢弃所有日志输出，保持控制台清洁
+                - 在生产环境中，建议使用slf4j-logback或slf4j-log4j12
+                - 如果需要查看Kafka的详细日志，可以替换为其他SLF4J实现
+                
+                其他可选的SLF4J实现：
+                - slf4j-simple: 简单的控制台输出
+                - slf4j-logback: 功能强大的日志框架
+                - slf4j-log4j12: 经典的Log4j实现
+            -->
         </dependency>
     </dependencies>
 
+    <!-- 
+        构建配置说明：
+        
+        运行示例的方法：
+        1. 确保Kafka服务器正在运行
+        2. 创建所需的Topic（如Hello-Kafka、Kafka-Partitioner-Test）
+        3. 使用IDE运行各个示例类的main方法
+        4. 或使用Maven命令：mvn exec:java -Dexec.mainClass="类的完整名称"
+        
+        Topic创建命令示例：
+        kafka-topics.sh --create --topic Hello-Kafka --bootstrap-server localhost:9092 --partitions 3 --replication-factor 1
+        kafka-topics.sh --create --topic Kafka-Partitioner-Test --bootstrap-server localhost:9092 --partitions 2 --replication-factor 1
+        
+        注意事项：
+        - 确保Kafka服务器地址配置正确（默认为hadoop001:9092）
+        - 根据实际环境修改bootstrap.servers配置
+        - 建议先运行生产者，再运行消费者
+        - 消费者组ID相同的消费者会进行负载均衡
+    -->
 
 </project>
