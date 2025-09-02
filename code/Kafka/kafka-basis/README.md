@@ -25,6 +25,8 @@ kafka-basis/
         ├── ProducerASyn.java                   # 异步生产者
         ├── ProducerSyn.java                    # 同步生产者
         ├── ProducerWithPartitioner.java        # 使用自定义分区器的生产者
+        ├── ProducerWithRetry.java              # 重试机制生产者
+        ├── ProducerRetryMistakes.java          # 重试机制常见错误示例
         └── partitioners/
             └── CustomPartitioner.java          # 自定义分区器实现
 ```
@@ -131,7 +133,29 @@ mvn exec:java -Dexec.mainClass="com.heibaiying.consumers.ConsumerASyn"
   - 分区策略的影响
   - 参数传递机制
 
-#### 5. CustomPartitioner - 自定义分区器实现
+#### 5. ProducerWithRetry - 重试机制生产者
+- **文件**: `src/main/java/com/heibaiying/producers/ProducerWithRetry.java`
+- **功能**: 演示多种重试策略的实现方式
+- **知识点**:
+  - 同步发送 + 手动重试
+  - 异步发送 + 回调内重试
+  - 使用CompletableFuture的重试机制
+  - Kafka内置重试配置
+  - 可重试异常的判断
+  - 指数退避策略
+  - 重试间隔和最大重试次数的设置
+
+#### 6. ProducerRetryMistakes - 重试机制常见错误示例
+- **文件**: `src/main/java/com/heibaiying/producers/ProducerRetryMistakes.java`
+- **功能**: 演示开发中常见的重试机制错误实现
+- **知识点**:
+  - [=重要=] 异步回调中抛出异常，外部try-catch无法捕获
+  - [=重要=] 线程隔离导致的异常传播问题
+  - 错误的重试逻辑和异常处理
+  - 同步vs异步执行模型的差异
+  - 正确的异步重试实现方式
+
+#### 7. CustomPartitioner - 自定义分区器实现
 - **文件**: `src/main/java/com/heibaiying/producers/partitioners/CustomPartitioner.java`
 - **功能**: 自定义分区逻辑的实现
 - **知识点**:
