@@ -95,8 +95,8 @@ private CompletableFuture<RecordMetadata> sendWithRetryAsync(ProducerRecord<Stri
         if (exception != null) {
             if (currentAttempt < maxRetries - 1) {
                 // 使用CompletableFuture链式处理重试
-                [=sendWithRetryAsync(record, maxRetries, currentAttempt + 1)
-                    .whenComplete((retryMetadata, retryException) -> {=]
+                sendWithRetryAsync(record, maxRetries, currentAttempt + 1)
+                    .whenComplete((retryMetadata, retryException) -> {
                         if (retryException != null) {
                             future.completeExceptionally(retryException);
                         } else {
@@ -245,7 +245,6 @@ public class IdempotentProducerConfig {
 ```
 
 </details>
-
 #### 2. **使用事务（最强保证）**
 
 <details>
@@ -447,7 +446,7 @@ Kafka幂等性通过Producer ID (PID) + 分区 + 序列号的组合来实现去�
 <details>
 <summary>点击展开幂等性工作原理图示</summary>
 
-```
+```text
 生产者端：
 PID: 12345
 分区0: 序列号 0, 1, 2, 3...
