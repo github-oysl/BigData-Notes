@@ -1,76 +1,111 @@
 <!--
-Licensed to the Apache Software Foundation (ASF) under one
-or more contributor license agreements.  See the NOTICE file
-distributed with this work for additional information
-regarding copyright ownership.  The ASF licenses this file
-to you under the Apache License, Version 2.0 (the
-"License"); you may not use this file except in compliance
-with the License.  You may obtain a copy of the License at
+    Apache Flink项目Maven配置文件
+    
+    这个pom.xml文件定义了一个基础的Flink Java项目的Maven构建配置
+    包含了Flink开发所需的核心依赖、插件配置和构建设置
+    
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
 
-  http://www.apache.org/licenses/LICENSE-2.0
+      http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing,
-software distributed under the License is distributed on an
-"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, either express or implied.  See the License for the
-specific language governing permissions and limitations
-under the License.
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<!-- Maven POM模型版本，固定为4.0.0 -->
 	<modelVersion>4.0.0</modelVersion>
 
+	<!-- 项目坐标信息 -->
+	<!-- 组织或公司的唯一标识符，通常使用反向域名 -->
 	<groupId>com.heibaiying</groupId>
+	<!-- 项目的唯一标识符，在同一个groupId下必须唯一 -->
 	<artifactId>flink-basis-java</artifactId>
+	<!-- 项目版本号 -->
 	<version>1.0</version>
+	<!-- 打包方式，jar表示打包成JAR文件 -->
 	<packaging>jar</packaging>
 
+	<!-- 项目名称，用于文档和报告 -->
 	<name>Flink Quickstart Job</name>
+	<!-- 项目主页URL -->
 	<url>http://www.myorganization.org</url>
 
+	<!-- 项目属性配置，定义了项目中使用的各种版本号和编码设置 -->
 	<properties>
+		<!-- 项目源码编码格式，设置为UTF-8确保中文等字符正确处理 -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<!-- Flink框架版本号，1.9.0是一个稳定的LTS版本 -->
 		<flink.version>1.9.0</flink.version>
+		<!-- Java版本，使用Java 8，Flink 1.9.0支持的主要Java版本 -->
 		<java.version>1.8</java.version>
+		<!-- Scala二进制版本，Flink的Scala API使用2.11版本 -->
 		<scala.binary.version>2.11</scala.binary.version>
+		<!-- Maven编译器源码版本，引用上面定义的java.version -->
 		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<!-- Maven编译器目标版本，引用上面定义的java.version -->
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 	</properties>
 
+	<!-- Maven仓库配置，定义从哪里下载依赖包 -->
 	<repositories>
+		<!-- Apache快照仓库，用于获取Apache项目的开发版本 -->
 		<repository>
+			<!-- 仓库唯一标识符 -->
 			<id>apache.snapshots</id>
+			<!-- 仓库名称描述 -->
 			<name>Apache Development Snapshot Repository</name>
+			<!-- 仓库URL地址 -->
 			<url>https://repository.apache.org/content/repositories/snapshots/</url>
+			<!-- 禁用正式发布版本的下载 -->
 			<releases>
 				<enabled>false</enabled>
 			</releases>
+			<!-- 启用快照版本的下载 -->
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
 		</repository>
 	</repositories>
 
+	<!-- 项目依赖配置 -->
 	<dependencies>
-		<!-- Apache Flink dependencies -->
-		<!-- These dependencies are provided, because they should not be packaged into the JAR file. -->
+		<!-- Apache Flink核心依赖 -->
+		<!-- 这些依赖使用provided作用域，因为它们不应该被打包到最终的JAR文件中 -->
+		<!-- Flink运行时环境会提供这些依赖 -->
+		
+		<!-- Flink Java API核心库，提供DataSet API用于批处理 -->
 		<dependency>
 			<groupId>org.apache.flink</groupId>
 			<artifactId>flink-java</artifactId>
 			<version>${flink.version}</version>
+			<!-- provided作用域：编译和测试时可用，但不会打包到最终JAR中 -->
 			<scope>provided</scope>
 		</dependency>
+		
+		<!-- Flink流处理Java API，提供DataStream API用于流处理 -->
 		<dependency>
 			<groupId>org.apache.flink</groupId>
 			<artifactId>flink-streaming-java_${scala.binary.version}</artifactId>
 			<version>${flink.version}</version>
+			<!-- provided作用域：运行时由Flink集群提供 -->
 			<scope>provided</scope>
 		</dependency>
 
-		<!-- Add connector dependencies here. They must be in the default scope (compile). -->
+		<!-- 连接器依赖应该添加在这里，它们必须使用默认的compile作用域 -->
+		<!-- 例如：Kafka连接器、Elasticsearch连接器等 -->
 
-		<!-- Example:
-
+		<!-- 示例：Kafka连接器依赖（已注释）
 		<dependency>
 			<groupId>org.apache.flink</groupId>
 			<artifactId>flink-connector-kafka-0.10_${scala.binary.version}</artifactId>
@@ -78,26 +113,63 @@ under the License.
 		</dependency>
 		-->
 
-		<!-- Add logging framework, to produce console output when running in the IDE. -->
-		<!-- These dependencies are excluded from the application JAR by default. -->
+		<!-- 日志框架依赖，用于在IDE中运行时产生控制台输出 -->
+		<!-- 这些依赖默认情况下会从应用程序JAR中排除 -->
+		
+		<!-- SLF4J与Log4j的桥接器，将SLF4J日志调用转发给Log4j -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.7.7</version>
+			<!-- runtime作用域：运行时需要，但编译时不需要 -->
 			<scope>runtime</scope>
 		</dependency>
+		
+		<!-- Log4j日志实现库，提供实际的日志输出功能 -->
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>1.2.17</version>
+			<!-- runtime作用域：仅在运行时需要 -->
 			<scope>runtime</scope>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+		
+		<!-- Lombok代码生成工具，用于自动生成getter、setter、toString等方法 -->
+		<!-- 减少样板代码，提高开发效率 -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<version>1.18.10</version>
+			<!-- provided作用域：仅在编译时需要，运行时不需要 -->
 			<scope>provided</scope>
+		</dependency>
+
+		<!-- Kafka 连接器依赖：用于与Apache Kafka集成 -->
+		<dependency>
+			<groupId>org.apache.flink</groupId>
+			<artifactId>flink-connector-kafka_2.11</artifactId>
+			<version>${flink.version}</version>
+		</dependency>
+
+		<!-- CEP 依赖：复杂事件处理库 -->
+		<dependency>
+			<groupId>org.apache.flink</groupId>
+			<artifactId>flink-cep_2.11</artifactId>
+			<version>${flink.version}</version>
+		</dependency>
+
+		<!-- Table API 依赖：用于SQL和Table API功能 -->
+		<dependency>
+			<groupId>org.apache.flink</groupId>
+			<artifactId>flink-table-api-java-bridge_2.11</artifactId>
+			<version>${flink.version}</version>
+		</dependency>
+
+		<!-- Blink Planner 依赖：Table API的查询优化器 -->
+		<dependency>
+			<groupId>org.apache.flink</groupId>
+			<artifactId>flink-table-planner-blink_2.11</artifactId>
+			<version>${flink.version}</version>
 		</dependency>
 	</dependencies>
 
